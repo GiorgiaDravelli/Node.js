@@ -24,7 +24,9 @@ exports.createOrder = async (req, res) => {
 
 exports.getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find()
+    const page = req.query.page || 0
+    const ordersPerPage = 5
+    const orders = await Order.find().skip(page * ordersPerPage).limit(ordersPerPage)
       .populate("userID", "name surname email")
       .populate("productID", "name");
     res.status(200).json(orders);
@@ -37,13 +39,15 @@ exports.getAllOrdersbyDate = async (req, res) => {
   try {
     const { date } = req.params;
     const targetDate = new Date(date);
+    const page = req.query.page || 0;
+    const ordersPerPage = 5;
 
     const orders = await Order.find({
       createdAt: {
-        $gte: targetDate,
-        $lt: new Date(targetDate.getTime() + 86400000),
+        $gte: targetDate
       },
-    })
+    }).skip(page * ordersPerPage)
+      .limit(ordersPerPage)
       .populate("userID")
       .populate("productID"); 
 
@@ -58,7 +62,11 @@ exports.getOrderByUser = async (req, res) => {
     if (!userID) {
       return res.status(404).json({ error: "User not found." });
     }
+    const page = req.query.page || 0
+    const ordersPerPage = 5
     const orders = await Order.find({ userID: userID })
+      .skip(page * ordersPerPage)
+      .limit(ordersPerPage)
       .populate("userID", "name surname email")
       .populate("productID", "name");
 
@@ -79,13 +87,16 @@ exports.getOrdersByUserAndDate = async (req, res) => {
     }
 
     const targetDate = new Date(date);
+    const page = req.query.page || 0
+    const ordersPerPage = 5
     const orders = await Order.find({
       userID: userID,
       createdAt: {
         $gte: targetDate,
         $lt: new Date(targetDate.getTime() + 86400000),
       },
-    })
+    }).skip(page * ordersPerPage)
+      .limit(ordersPerPage)
       .populate("userID", "name surname email")
       .populate("productID", "name");
 

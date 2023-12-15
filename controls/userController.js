@@ -20,12 +20,15 @@ exports.createUser = async (req, res) => {
   };
   
   // Get all users
-  exports.getAllUsers = async (req, res) => {
+  exports.getAllUsers = async (req, res) => { 
     try {
-      const users = await User.find();
+      const page = req.query.page || 0
+      const usersPerPage = 5
+      const users = await User.find().skip(page * usersPerPage).limit(usersPerPage);
       res.status(200).json(users);
     } catch (error) {
-      res.status(500).json({ error: "Unable to retrieve users." });
+      res.status(500).json({ error: "Unable to retrieve users."});
+      console.log(error)
     }
   };
   

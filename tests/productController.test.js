@@ -11,10 +11,22 @@ mongoose.connect('mongodb://127.0.0.1/orizondb')
 .catch(err=> console.error('Failed to connect to the server. ' + err))
 
 const productsData = [
-  { name: "Milano-Lecce" },
-  { name: "Parigi-Torino" },
-  { name: "Parma-Napoli" },
-  { name: "Londra-Parigi" }, 
+  { 
+    name: "Milano-Lecce",
+    id: "1" 
+  },
+  { 
+    name: "Parigi-Torino",
+    id: "2" 
+  },
+  { 
+    name: "Parma-Napoli",
+    id: "3" 
+  },
+  { 
+    name: "Londra-Parigi",
+    id: "4"  
+  }, 
 ];
 
 before(async () => {
@@ -66,22 +78,23 @@ describe("Test Product Metods", async () => {
     }
   });
 
-  it("Test getProductByName", async () => {
+  it("Test getProductById", async () => {
     try {
       const req = {
         params: {
           name: "Milano-Lecce",
+          id: "1"
         },
       };
       const res = {
         status: sinon.stub().returnsThis(),
         json: sinon.spy(),
       };
-      await ProductController.getProductByName(req, res);
+      await ProductController.getProductById(req, res);
       sinon.assert.calledWith(res.status, 200);
       const foundProduct = res.json.getCall(0).args[0];
 
-      chai.assert.equal(foundProduct.name, "Milano-Lecce", "name found");
+      chai.assert.equal(foundProduct.id, "1", "id found");
     } catch (error) {
       console.log("error!!" + error);
       throw new Error(error);
@@ -115,6 +128,7 @@ describe("Test Product Metods", async () => {
       const req = {
         params: {
           name: "Parigi-Torino",
+          id: "2"
         },
       };
       const res = {
@@ -123,8 +137,8 @@ describe("Test Product Metods", async () => {
       };
       await ProductController.deleteProduct(req, res);
       sinon.assert.calledWith(res.status, 200);
-      const foundProduct = await ProductModel.findByName("Parigi-Torino");
-      chai.assert.isNull(foundProduct, "Parigi-Torino non trovato");
+      const foundProduct = await ProductModel.findById("2");
+      chai.assert.isNull(foundProduct, "Id 2 non trovato");
     } catch (error) {
       console.log("error!!" + error);
       throw new Error(error);

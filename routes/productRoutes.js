@@ -9,7 +9,7 @@ router.post("/", productController.createProduct);
 router.get("/", productController.getAllProducts);
 
 // Route per ottenere un prodotto per nome;
-router.get("/:name", productController.getProductByName);
+router.get("/:name", productController.getProductById);
 
 // Route per aggiornare un prodotto per nome
 router.put("/:name", productController.updateProduct);

@@ -15,7 +15,7 @@ router.get("/all/:date", orderController.getAllOrdersbyDate);
 router.get("/:userId", orderController.getOrderByUser);
 
 // Route per ottenere gli ordini per utente filtrati per data
-router.get("/:userId/:date", orderController.getOrdersByUserAndDate);
+router.get("/users/:email/orders/:date", orderController.getOrdersByUserAndDate);
 
 // Route per aggiornare un ordine per id
 router.put("/:id", orderController.updateOrder);

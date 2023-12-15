@@ -15,18 +15,20 @@ exports.createProduct = async (req, res) => {
 // Get all products
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const page = req.query.page || 0
+    const productsPerPage = 5
+    const products = await Product.find().skip(page * productsPerPage).limit(productsPerPage);
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ error: "Unable to retrieve products." });
   }
 };
 
-// Get a product by name
-exports.getProductByName = async (req, res) => {
+// Get a product by ID
+exports.getProductById = async (req, res) => {
   try {
-    const { name } = req.params;
-    const product = await Product.findByName(name);
+    const { id } = req.params;
+    const product = await Product.findById(id);
 
     if (!product) {
       return res.status(404).json({ error: "Product not found." });
@@ -38,12 +40,12 @@ exports.getProductByName = async (req, res) => {
   }
 };
 
-// Update a product by name
+// Update a product by ID
 exports.updateProduct = async (req, res) => {
 try {
-    const nameToUpdate = req.params.name;
+    const idToUpdate = req.params.id;
     const updates = req.body;
-    const product = await Product.findOne({ name: nameToUpdate });
+    const product = await Product.findOne({ id: idToUpdate });
 
     if (!product) {
     return res.status(404).json({ error: "Product not found." });
@@ -60,10 +62,10 @@ try {
 }
 };
 
-// Delete a product by name
+// Delete a product by ID
 exports.deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findOneAndDelete({ name: req.params.name });
+    const product = await Product.findOneAndDelete({ id: req.params.id });
     if (!product) {
       return res.status(404).json({ error: "Product not found." });
     }
